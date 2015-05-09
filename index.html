@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <meta name="description" content='Confférence DjangoCong 2015, Clermont-Ferrand: Packager son projet django, par Stéphane "Twidi" Angel' />
+    <title>Packager son projet django</title>
+    <style type="text/css">
+      @import url(http://fonts.googleapis.com/css?family=Droid+Serif);
+      @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body {
+        font-family: 'Droid Serif';
+      }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: 400;
+        margin-bottom: 0;
+      }
+      .remark-slide-content h1 { font-size: 3em; }
+      .remark-slide-content h2 { font-size: 2em; }
+      .remark-slide-content h3 { font-size: 1.6em; }
+      .footnote {
+        position: absolute;
+        bottom: 3em;
+        right: 3em;
+      }
+      .remark-slide-number {
+        left: 3em;
+        bottom: 3em;
+        text-align: left;
+        display: none;
+      }
+      .justified {
+        text-align: justify! important;
+      }
+      li p { line-height: 1.25em; }
+      .red { color: #fa0000; }
+      .large { font-size: 2em; }
+      a, a > code {
+        color: rgb(249, 38, 114);
+        text-decoration: none;
+      }
+      .important {
+        color: rgb(249, 38, 114);
+      }
+      .bold {
+        font-weight: bold;
+      }
+      .strike {
+        text-decoration: line-through;
+      }
+      .strike-code .remark-code-line {
+        position: relative;
+      }
+      .strike-code .remark-code-line::after {
+          position: absolute;
+          content: " ";
+          top: 50%;
+          left: 0;
+          right: 0;
+          border-top: solid 2px rgb(249, 38, 114);
+      }
+      .smaller {
+        font-size: smaller;
+      }
+      .bigger {
+        font-size: larger;
+      }
+      .bigger .remark-code {
+        font-size: 28px;
+      }
+      .smaller .remark-code {
+        font-size: 14px;
+      }
+      code {
+        background: #e7e8e2;
+        border-radius: 5px;
+      }
+      .img-code {
+        display: block;
+        background: #000001;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .img-code img {
+        max-width: 100%;
+      }
+      blockquote {
+        background: #e7e8e2;
+        border-radius: 5px;
+        padding: 20px;
+      }
+      p > img {
+        max-width: 90%;
+      }
+      .inverse blockquote {
+        color: #272822;
+        line-height: 2em;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+      .remark-code {
+        border-left: solid 3px #75715E;
+        padding-left: 1.5em !important;
+      }
+      .no-border .remark-code {
+        border-left: none;
+      }
+      .remark-code-line-highlighted     { background-color: #373832; }
+      .no-hl .remark-code-line * {
+        color: inherit !important;
+      }
+      .pull-left {
+        float: left;
+        width: 47%;
+      }
+      .pull-right {
+        float: right;
+        width: 47%;
+      }
+      .pull-right ~ p {
+        clear: both;
+      }
+      #slideshow .slide .content code {
+        font-size: 0.8em;
+      }
+      #slideshow .slide .content pre code {
+        font-size: 0.9em;
+        padding: 15px;
+      }
+      .inverse {
+        background: #272822;
+        background-repeat: no-repeat;
+        /*color: #AAABA4;*/
+        color: #CEC0C0;
+        text-shadow: 0 0 20px #333;
+      }
+      .twocols-inverse{
+        background: #272822;
+        color: #AAABA4;
+      }
+      .inverse h1, .inverse h2 {
+        color: #f3f3f3;
+        line-height: 0.8em;
+      }
+
+      /* Slide-specific styling */
+      #slide-inverse .footnote {
+        bottom: 12px;
+        left: 20px;
+      }
+      .footnote.preintro {
+        bottom: 20px !important;
+        right: 0;
+        left: 0;
+        text-align: center;
+      }
+      #slide-how .slides {
+        font-size: 0.9em;
+        position: absolute;
+        top:  151px;
+        right: 140px;
+      }
+      #slide-how .slides h3 {
+        margin-top: 0.2em;
+      }
+      #slide-how .slides .first, #slide-how .slides .second {
+        padding: 1px 20px;
+        height: 90px;
+        width: 120px;
+        -moz-box-shadow: 0 0 10px #777;
+        -webkit-box-shadow: 0 0 10px #777;
+        box-shadow: 0 0 10px #777;
+      }
+      #slide-how .slides .first {
+        background: #fff;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        z-index: 1;
+      }
+      #slide-how .slides .second {
+        position: relative;
+        background: #fff;
+        z-index: 0;
+      }
+
+      /* Two-column layout */
+      .left-column {
+        color: #777;
+        width: 20%;
+        height: 92%;
+        float: left;
+      }
+        .left-column h2:last-of-type, .left-column h3:last-child {
+          color: #000;
+        }
+        .twocols-inverse .left-column {
+          color: #666;
+        }
+        .twocols-inverse .left-column h2:last-of-type, .twocols-inverse .left-column h3:last-child {
+          color: #f3f3f3;
+        }
+      .right-column {
+        width: 75%;
+        float: right;
+        display: table;
+        table-layout: fixed;
+        height: 100%;
+      }
+      .right-column .middle {
+        display: table-cell;
+        vertical-align: middle;
+      }
+      .center .left {
+        display: inline-block;
+      }
+      .alone h1 {
+        margin: none;
+        padding: none;
+      }
+    </style>
+  </head>
+  <body>
+  
+    <textarea id="source">
+class: center, middle
+background-image: url(img/mire.jpg)
+.footnote.preintro[La connextion au projecteur semble bonne. On peut commencer.]
+---
+name: inverse
+layout: true
+class: inverse
+---
+class: center, middle
+
+#"Packager" un projet Django
+.footnote[par [Stéphane "Twidi" Angel](http://twidi.com)]
+---
+class: center
+# Pourquoi packager
+.left[
+<br/>
+##• Versions
+<br/>
+##• Partage
+<br/>
+##• Déploiement
+]
+---
+class: center
+# Comment versionner
+.left[
+<br/>
+##• cp -a projet "projet-\`date +%F\`"
+<br/>
+##• git tag \`date +%F\`
+]
+---
+class: center
+# Comment .important.bold[NE PAS] versionner
+.left[
+<br/>
+##• cp -a projet "projet-\`date +%F\`"
+<br/>
+##• git tag \`date +%F\` .important[*]
+.footnote[.important[*]Bon, ok]
+]
+---
+class: center
+# Comment partager
+.left[
+<br/>
+##• partage réseau
+<br/>
+##• copie sur clé USB
+<br/>
+##• transfert FTP
+<br/>
+##• transfert SCP
+]
+---
+class: center
+# Comment .important.bold[NE PAS] partager
+.left[
+<br/>
+##• partage réseau
+<br/>
+##• copie sur clé USB
+<br/>
+##• transfert FTP
+<br/>
+##• transfert SCP
+]
+---
+class: center
+# Comment déployer
+.left[
+<br/>
+##• coder en prod
+<br/>
+##• transfert FTP
+<br/>
+##• transfert SCP
+<br/>
+##• git pull
+]
+---
+class: center
+# Comment .important.bold[NE PAS] déployer
+.left[
+<br/>
+##• coder en prod
+<br/>
+##• transfert FTP
+<br/>
+##• transfert SCP
+<br/>
+##• git pull
+]
+---
+class: center, middle
+# Solution: le .important.bold[PACKAGING]
+---
+class: center
+# Le packaging:
+.left[
+<br/><br/>
+## • apporte la gestion des dépendances
+<br/>
+## • apporte la gestion des versions
+<br/>
+## • permet de savoir où trouver le package
+<br/>
+## • rend la publication simple et rapide
+]
+---
+class: center
+# Structure d'un projet
+
+(**Exemple** de structure d'un simple projet Django)
+
+.left.no-hl.no-border[
+```
+── py_foo                    -> répertoire principal (dépôt git...)
+*   ├── foo                  -> le projet à packager
+*   │   ├── apps                -> apps django propre au projet
+*   │   │    └── (...)
+*   │   ├── locale              -> quelques inévitables dossiers...
+*   │   │    └── (...)
+*   │   ├── media
+*   │   │    └── (...)
+*   │   ├── static
+*   │   │    └── (...)
+*   │   ├── templates
+*   │   │    └── (...)
+*   │   ├── __init__.py         -> ... et fichiers
+*   │   ├── urls.py
+*   │   └── wsgi.py
+    ├── README.md            -> pour dire de quoi le projet parle
+    ├── requirements.txt     -> les dépendances de votre projet
+    └── setup.py             -> fichier qui permet de faire le package
+```
+.footnote[Je n'ai pas mis .bold[manage.py] car vous préférez bien sûr utiliser .bold[django-admin]]
+]
+---
+.center[
+# Le fichier .important[setup.py]
+
+## Sa structure de base
+]
+<br/>
+
+```python
+from setuptools import setup, find_packages
+
+setup(
+    name='foo',
+    version='0.0.1',
+    packages = find_packages(),
+)
+```
+---
+.center[
+# Le fichier .important[setup.py]
+
+## En général un peu plus toufu
+]
+<br/>
+
+```python
+from setuptools import setup, find_packages
+
+setup(
+    name='foo',
+    version='0.0.1',
+
+    packages=find_packages(),
+    include_package_data=True,
+
+    description='Foo, Bar Baz!',
+    long_description='Foo, a deer, a female deer... '
+                     'Bar a note to follow Foo... '
+                     'Baz, a name, I call myself...',
+
+    url='https://github.com/myself/foo/',
+    author='My Self',
+    author_email='foo@bar.com',  # *
+)
+```
+.footnote[\* Rappelez-vous d'aller un jour voir http://bar.com. Non, pas maintenant, merci ;)]
+---
+class: center
+# Le fichier .important[setup.py]
+<br/>
+
+## Création automatique
+<br/>
+
+.bigger[
+```bash
+$ python createsetup --name=foo --version=0.0.1
+```
+]
+--
+.center[
+# .important.bold[MOUAH AH AH AH AH]
+]
+---
+class: center
+# Le fichier .important[setup.py]
+<br/>
+
+## .important[PAS DE] création automatique
+<br/>
+
+.strike-code.bigger[
+```bash
+$ python createsetup --name=foo --version=0.0.1
+```
+]
+---
+class: center
+# Créer un fichier .important[setup.py]
+<br />
+.left[
+### 1. trouver sur le web un fichier setup.py
+### 2. copier coller son contenu
+### 3. faire les modifications nécessaires
+### 4. publier le package
+### 5. modifier ce qui ne l'a pas été à l'étape 3
+### 6. republier le package
+]
+---
+class: center
+# Le fichier .important[setup.py] en détail
+
+
+.left[
+###Nous allons voir:
+
+### • version
+### • description
+### • dépendances
+### • fichiers non-python (assets, templates, data...)
+]
+---
+class: center
+# Version
+
+## Pep 440
+
+.left.no-hl.no-border[
+```text
+1.0.dev456
+1.0a1
+1.0a2.dev456
+1.0a12.dev456
+1.0a12
+1.0b1.dev456
+1.0b2
+1.0b2.post345.dev456
+1.0b2.post345
+1.0rc1.dev456
+1.0rc1
+1.0
+1.0+abc.5
+1.0+abc.7
+1.0+5
+1.0.post456.dev34
+1.0.post456
+1.0.1
+1.1.dev1
+``` 
+]
+---
+class: center
+# Version: hard-coding
+
+.left[
+
+### py\_foo/foo/\__\_init_\__.py
+```python
+#...
+__version__ = '0.0.1a1'
+ VERSION = tuple(__version__.split('.'))
+# VERSION est maintenant (0, 0, '1a1')
+#...
+```
+
+### py_foo/setup.py
+```python
+#...
+    version='0.0.1a1',
+#...
+```
+]
+--
+.center[
+# .important.bold[NOT DRY]
+.footnote[.important[D]on't .important[R]epeat .important[Y]ourself]
+]
+---
+class: center
+# Version: importing
+
+.left[
+
+### py\_foo/foo/\__\_init_\__.py
+```python
+#...
+__version__ = '0.0.1a1'
+ VERSION = tuple(__version__.split('.'))
+#...
+```
+### py_foo/setup.py
+```python
+from foo import __version__
+#...
+    version=__version__,
+#...
+```
+]
+--
+.center[
+### Exécutera \__\_init_\__.py avant l'installation des dépendances, ce qui peut être problématique.
+]
+---
+class: center
+# Version: parsing
+
+.left[
+```python
+import ast, codecs, os
+
+class VersionFinder(ast.NodeVisitor):
+    def __init__(self):
+        self.version = None
+
+    def visit_Assign(self, node):
+        if node.targets[0].id == '__version__':
+            self.version = node.value.s
+
+def read(*path_parts):
+    filename = os.path.join(os.path.dirname(__file__), *path_parts)
+    with codecs.open(filename, encoding='utf-8') as fp:
+        return fp.read()
+
+def find_version(*path_parts):
+    finder = VersionFinder()
+    finder.visit(ast.parse(read(*path_parts)))
+    return finder.version
+
+#...
+*   version=find_version('foo', '__init__.py'),
+```
+.footnote[Emprunté à [django-compressor](https://github.com/django-compressor/django-compressor/blob/develop/setup.py)]
+]
+---
+class: center
+# Description
+<br />
+
+.left[
+### • .important[description]
+
+Nom qui apparaîtra par exemple dans les résultats de *pip search*
+
+### • .important[long_description]
+
+Texte qui apparaîtra par exemple sur les pages web de PyPI.
+]
+---
+class: center
+# Description: hard-coding
+
+.left[
+
+### py\_foo/foo/\__\_init_\__.py
+```python
+"""Foo, Bar Baz!"""  # docstring
+#...
+```
+
+###py_foo/README.md
+```
+Foo, a deer, a female deer... 
+Bar a note to follow Foo...
+Baz, a name, I call myself...
+```
+
+### py_foo/setup.py
+```python
+#...
+    description="Foo, Bar Baz!",
+    long_description='Foo, a deer, a female deer... '
+                     'Bar a note to follow Foo... '
+                     'Baz, a name, I call myself...',
+#...
+```
+]
+---
+class: center
+# Description: hard-coding
+## .important.bold[Toujours pas DRY]
+--
+<br/><br/><br/><br/>
+# Description: importing
+## .important.bold[Toujours pentiellement problématique]
+---
+class: center
+# Description: parsing
+
+Récupérer la description depuis le docstring du fichier py\_foo/foo/\__\_init_\__.py
+
+.left[
+
+.strike-code[
+
+```python
+def find_version(*path_parts):
+    finder = VersionFinder()
+    finder.visit(ast.parse(read(*path_parts)))
+    return finder.version
+```
+
+]
+
+.noop[
+
+```python
+def find_infos(*path_parts):
+    finder = VersionFinder()
+    node = ast.parse(read(*path_parts))
+*   docstring = ast.get_docstring(node)
+    finder.visit(node)
+    return finder.version, docstring
+
+*version, descrption = find_infos('foo', '__init__.py'),
+
+#...
+setup(
+    version=version,
+    description=description,
+#...
+)
+```
+
+]
+
+]
+---
+class: center
+# Description: parsing
+
+Récupérer la longue description depuis le contenu du fichier py_foo/README.md
+
+.left[
+```python
+#...
+    long_description=read('README.md'),
+#...
+```
+]
+
+.footnote[Ou plutôt *.rst* si vous voulez une mise en page correcte sur PyPI]
+
+---
+class: center
+# Évolution de notre setup
+.left[
+<br/>
+
+```python
+#...
+package_name = 'foo'
+version, descrption = find_infos(package_name, '__init__.py'),
+
+setup(
+    name=package_name,
+    version=version,
+
+    packages=find_packages(),
+    include_package_data=True,
+
+    description=description,
+    long_description=read('README.md'),
+
+    url='https://github.com/myself/foo/',
+    author='My Self',
+    author_email='foo@bar.com'
+)
+```
+
+.footnote[.important[url], .important[author] et .important[author_email] peuvent aussi être gérés de la même façon.]
+
+]
+
+---
+class: center
+# Dépendances
+<br/>
+--
+
+.left.no-hl[
+Exemple de requirements.txt:
+```
+django==1.8.1
+psycopg2==2.6
+django-extended-choices==1.0.4
+```
+]
+---
+class: center
+# Dépendances
+<br/>
+## Via _pip install_
+<br/>
+
+.left.bigger[
+```bash
+$ pip install -r requirements.txt
+```
+]
+.footnote[Pas de sudo car dans un virtualenv]
+
+--
+
+.left[
+## .important[OK, mais pour développer]
+]
+---
+class: center
+# Dépendances
+<br/>
+## Via le fichier de setup
+<br/>
+
+.left[
+```python
+setup(
+#...
+  install_requires=[
+    'django==1.8.1',
+    'psycopg2==2.6',
+    'django-extended-choices==1.0.4',
+  ],
+#...
+)
+```
+]
+--
+.center[
+# .important.bold[Toujours pas DRY]
+]
+---
+class: center
+# Dépendances
+<br/>
+
+.left[
+```python
+from pip.req import parse_requirements
+
+def get_requirements(source):
+    install_reqs = parse_requirements(source)
+    return set([str(ir.req) for ir in install_reqs])
+
+
+setup(
+#...
+    install_requires=get_requirements('requirements.txt'),
+#...
+)
+```
+]
+---
+class: center
+# Assets
+<br/>
+.left[
+### • templates
+### • CSS
+### • JS
+### • data (JSON...)
+]
+--
+<br/><br/><br/>
+.center[
+### \+ tout ce qui n'est pas python
+]
+---
+class: center
+# Assets
+<br/>
+.center[
+## Fichier .important[MANIFEST.in]
+<br/>
+]
+--
+.left.no-hl[
+```
+include README.md
+include MANIFEST.in
+include requirements.txt
+recursive-include foo *.html
+recursive-include foo/static *
+recursive-exclude foo/media *
+recursive-include foo/locale *.mo
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+```
+]
+---
+class: center
+# Générations d'assets
+--
+<br/><br/>
+## Kesako ?
+--
+<br/>
+.left[
+### • sass -> css
+### • coffee -> js
+### • gulp, grunt...
+]
+---
+class: center
+# Générations d'assets
+<br/>
+## Deux possibilités:
+<br/>
+### 1. avant de lancer le setup
+--
+<br/>
+.center[
+### .important[Problème: et si on oublie ?]
+]
+---
+class: center
+# Générations d'assets
+<br/>
+## Deux possibilités:
+<br/>
+### 2. pendant le setup
+.center[
+### .important[Garantit que le paquet contient tout ce qu'il y avait au moment précis de sa génération]
+]
+---
+class: center
+# Générations d'assets
+<br/>
+.left[
+```python
+from distutils.command.sdist import sdist
+from subprocess import check_call
+
+class foo_sdist(sdist):
+    def run(self):
+        if not self.dry_run:
+            check_call(['invoke', 'prepare-build'])  # exemple
+
+        # distutils uses old-style classes, so no super()
+        sdist.run(self)
+
+setup(
+    #...
+    cmdclass={'sdist': foo_sdist},
+    #...
+)
+```
+]
+---
+class: center
+# Fichier setup final
+.left.smaller[
+
+```python
+import ast, codecs, os
+from distutils.command.sdist import sdist
+from pip.req import parse_requirements
+from subprocess import check_call
+
+# Configuration
+package_name = 'foo'
+long_doc_file = 'README.md'
+
+# Code
+def get_requirements(source):
+    install_reqs = parse_requirements(source)
+    return set([str(ir.req) for ir in install_reqs])
+
+class VersionFinder(ast.NodeVisitor):
+    def __init__(self):
+        self.data = {}
+
+    def visit_Assign(self, node):
+        if node.targets[0].id in ('__version__', '__author__', '__contact__', '__homepage__'):
+          self.data[node.targets[0].id[2:-2]] = node.value.s
+
+def read(*path_parts):
+    filename = os.path.join(os.path.dirname(__file__), *path_parts)
+    with codecs.open(filename, encoding='utf-8') as fp:
+        return fp.read()
+
+def find_infos(*path_parts):
+    finder = VersionFinder()
+    node = ast.parse(read(*path_parts))
+    infos = finder.visit(node)
+    infos['docstring'] = ast.get_docstring(node)
+    return infos
+
+package_info = find_infos(package_name, '__init__.py'),
+```
+]
+---
+class: center
+# Fichier setup final
+<br/>
+.left[
+```python
+setup(
+    name=package_name,
+    version=package_info['version'],
+
+    packages=find_packages(),
+    include_package_data=True,
+
+    description=package_info['docstring'],
+    long_description=read(long_doc_file),
+
+    url=package_info['homepage'],
+    author=package_info['author'],
+    author_email=package_info['contact']
+
+    install_requires=get_requirements('requirements.txt'),
+)
+```
+]
+---
+class: center
+# Upload
+<br/>
+.left.bigger[
+- sur PyPI si paquet public
+- ou sur un dépôt privé (devpi, gemfury...)
+<br/><br/>
+```bash
+$ python setup.py sdist upload
+```
+]
+.footnote[C'est une bonne idée de tester le paquet avant l'uplad, en fait]
+---
+class: center
+# Install
+<br/>
+.left.bigger[
+```bash
+$ pip install foo
+```
+]
+.center[ou]
+.left.bigger[
+```bash
+$ pip install foo==0.0.1a1
+```
+]
+<br/>
+.bigger.left[
+Installera:
+- le code du projet
+- les dépendances
+- les assets pré-"compilés"
+]
+
+---
+class: inverse, center, middle
+
+# MERCI !
+.footnote[Retrouvez cette présentation sur http://twidi.github.io/django-packaging-talk/]
+---
+class: center, middle
+layout: true
+background-image: url(img/mire.jpg)
+.footnote.preintro[Signal lost...]
+
+---
+    </textarea>
+    <script src="js/remark-latest.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var hljs = remark.highlighter.engine;
+    </script>
+    <script src="js/remark.language.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create({
+          highlightStyle: 'monokai',
+          highlightLanguage: 'remark'
+        }) ;
+    </script>
+  </body>
+</html>
