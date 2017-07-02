@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="" />
-    <meta name="description" content='Confférence DjangoCong 2015, Clermont-Ferrand: Packager son projet django, par Stéphane "Twidi" Angel' />
-    <title>Packager son projet django</title>
+    <meta name="description" content='Meetup Lille.py 6 juillet 2017: Packager son projet python, par Joachim "ewjoachim Jablon' />
+    <title>Packager son projet Python</title>
     <style type="text/css">
       @import url(http://fonts.googleapis.com/css?family=Droid+Serif);
       @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -223,7 +223,7 @@
     </style>
   </head>
   <body>
-  
+
     <textarea id="source">
 class: center, middle
 background-image: url(img/mire.jpg)
@@ -236,35 +236,37 @@ class: inverse
 class: center, middle
 
 #"Packager" un projet Django
-.footnote[par [Stéphane "Twidi" Angel](http://twidi.com)]
+.footnote.right[Présentation originale par [Stéphane "Twidi" Angel](http://twidi.com)
+<br/>
+légèrement retravaillée par [Joachim "ewjoachim" Jablon](http://ewjoach.im)]
 ---
 class: center
 # Pourquoi packager
 .left[
 <br/>
-##• Versions
+## • Versions
 <br/>
-##• Partage
+## • Partage
 <br/>
-##• Déploiement
+## • Déploiement
 ]
 ---
 class: center
 # Comment versionner
 .left[
 <br/>
-##• cp -a projet "projet-\`date +%F\`"
+## • cp -a projet "projet-\`date +%F\`"
 <br/>
-##• git tag \`date +%F\`
+## • git tag \`date +%F\`
 ]
 ---
 class: center
 # Comment .important.bold[NE PAS] versionner
 .left[
 <br/>
-##• cp -a projet "projet-\`date +%F\`"
+## • cp -a projet "projet-\`date +%F\`"
 <br/>
-##• git tag \`date +%F\` .important[*]
+## • git tag \`date +%F\` .important[*]
 .footnote[.important[*]Bon, à la rigueur...]
 ]
 ---
@@ -272,52 +274,52 @@ class: center
 # Comment partager
 .left[
 <br/>
-##• partage réseau
+## • partage réseau
 <br/>
-##• copie sur clé USB
+## • copie sur clé USB
 <br/>
-##• transfert FTP
+## • transfert FTP
 <br/>
-##• transfert SCP
+## • transfert SCP
 ]
 ---
 class: center
 # Comment .important.bold[NE PAS] partager
 .left[
 <br/>
-##• partage réseau
+## • partage réseau
 <br/>
-##• copie sur clé USB
+## • copie sur clé USB
 <br/>
-##• transfert FTP
+## • transfert FTP
 <br/>
-##• transfert SCP
+## • transfert SCP
 ]
 ---
 class: center
 # Comment déployer
 .left[
 <br/>
-##• coder en prod
+## • coder en prod
 <br/>
-##• transfert FTP
+## • transfert FTP
 <br/>
-##• transfert SCP
+## • transfert SCP
 <br/>
-##• git pull
+## • git pull
 ]
 ---
 class: center
 # Comment .important.bold[NE PAS] déployer
 .left[
 <br/>
-##• coder en prod
+## • coder en prod
 <br/>
-##• transfert FTP
+## • transfert FTP
 <br/>
-##• transfert SCP
+## • transfert SCP
 <br/>
-##• git pull
+## • git pull
 ]
 ---
 class: center, middle
@@ -339,30 +341,25 @@ class: center
 class: center
 # Structure d'un projet
 
-(**Exemple** de structure d'un simple projet Django)
+**Exemple** de structure d'un simple projet Python
 
 .left.no-hl.no-border[
 ```
 ── py_foo                    -> répertoire principal (dépôt git...)
-*   ├── foo                  -> le projet à packager
-*   │   ├── apps                -> apps django propre au projet
-*   │   │    └── (...)
-*   │   ├── locale              -> quelques inévitables dossiers...
-*   │   │    └── (...)
-*   │   ├── media
-*   │   │    └── (...)
-*   │   ├── static
-*   │   │    └── (...)
-*   │   ├── templates
-*   │   │    └── (...)
-*   │   ├── __init__.py         -> ... et fichiers
-*   │   ├── urls.py
-*   │   └── wsgi.py
-    ├── README.md            -> pour dire de quoi le projet parle
-    ├── requirements.txt     -> les dépendances de votre projet
-    └── setup.py             -> fichier qui permet de faire le package
+   ├── foo                   -> le projet à packager
+   │   ├── some_folder
+   │   │   ├── __init__.py
+   │   │   └── (...)
+   │   ├── __init__.py
+   │   ├── helpers.py
+   │   └── real_stuff.py
+   ├── tests                 -> les tests n'ont pas besoin d'être dans le module
+   │   ├── test_helpers.py
+   │   └── test_real_stuff.py
+   ├── README.md             -> pour dire de quoi le projet parle
+   ├── requirements.txt      -> les dépendances de votre projet
+   └── setup.py              -> fichier qui permet de faire le package
 ```
-.footnote[Je n'ai pas mis .bold[manage.py] car vous préférez bien sûr utiliser .bold[django-admin]]
 ]
 ---
 .center[
@@ -378,7 +375,7 @@ from setuptools import find_packages, setup
 setup(
     name='foo',
     version='0.0.1',
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
 )
 ```
 ---
@@ -396,7 +393,7 @@ setup(
     name='foo',
     version='0.0.1',
 
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     include_package_data=True,
 
     description='Foo, Bar Baz!',
@@ -420,7 +417,7 @@ class: center
 
 .bigger[
 ```bash
-$ python createsetup --name=foo --version=0.0.1
+$ python -m createsetup --name=foo --version=0.0.1
 ```
 ]
 --
@@ -437,7 +434,7 @@ class: center
 
 .strike-code.bigger[
 ```bash
-$ python createsetup --name=foo --version=0.0.1
+$ python -m createsetup --name=foo --version=0.0.1
 ```
 ]
 ---
@@ -460,10 +457,25 @@ class: center
 .left[
 ###Nous allons voir:
 
+### • nom
 ### • version
 ### • description
 ### • dépendances
 ### • fichiers non-python (assets, templates, data...)
+]
+---
+class: center
+# Le problème du nom
+
+
+.left[
+## Quel est le nom du package/projet ?
+
+### • Le nom du repo git ?
+### • Le nom du module au top level ?
+### • Le nom déclaré dans le setup.py / PyPI ?
+
+## L'idéal, c'est quand même que les 3 soient identiques.
 ]
 ---
 class: center
@@ -492,7 +504,7 @@ class: center
 1.0.post456
 1.0.1
 1.1.dev1
-``` 
+```
 ]
 ---
 class: center
@@ -505,7 +517,7 @@ class: center
 #...
 __version__ = '0.0.1a1'
  VERSION = tuple(__version__.split('.'))
-# VERSION est maintenant (0, 0, '1a1')
+# VERSION est maintenant ('0', '0', '1a1')
 #...
 ```
 
@@ -548,34 +560,30 @@ from foo import __version__
 ]
 ---
 class: center
-# Version: parsing
+# Version: exec
 
 .left[
+
+### py\_foo/foo/about.py
 ```python
-import ast, codecs, os
-
-class VersionFinder(ast.NodeVisitor):
-    def __init__(self):
-        self.version = None
-
-    def visit_Assign(self, node):
-        if node.targets[0].id == '__version__':
-            self.version = node.value.s
-
-def read(*path_parts):
-    filename = os.path.join(os.path.dirname(__file__), *path_parts)
-    with codecs.open(filename, encoding='utf-8') as fp:
-        return fp.read()
-
-def find_version(*path_parts):
-    finder = VersionFinder()
-    finder.visit(ast.parse(read(*path_parts)))
-    return finder.version
-
-#...
-*   version=find_version('foo', '__init__.py'),
+__version__ = '0.0.1a1'
 ```
-.footnote[Emprunté à [django-compressor](https://github.com/django-compressor/django-compressor/blob/develop/setup.py)]
+### py\_foo/foo/\__\_init_\__.py
+```python
+```python
+from .about import *
+```
+### py_foo/setup.py
+```python
+about = {}
+with open("foo/about.py") as f:
+    exec(f.read(), about)
+# ...
+setup(
+    version=about["__version__"],
+)
+```
+.footnote[Emprunté à [k4nar](https://github.com/k4nar)]
 ]
 ---
 class: center
@@ -605,7 +613,7 @@ class: center
 
 ###py_foo/README.md
 ```
-Foo, a deer, a female deer... 
+Foo, a deer, a female deer...
 Bar a note to follow Foo...
 Baz, a name, I call myself...
 ```
@@ -630,39 +638,30 @@ class: center
 ## .important.bold[Toujours pentiellement problématique]
 ---
 class: center
-# Description: parsing
+# Description: exec
 
-Récupérer la description depuis le docstring du fichier py\_foo/foo/\__\_init_\__.py
+Récupérer la description depuis le docstring du fichier py\_foo/foo/about.py
 
 .left[
 
-.strike-code[
-
-```python
-def find_version(*path_parts):
-    finder = VersionFinder()
-    finder.visit(ast.parse(read(*path_parts)))
-    return finder.version
-```
-
-]
-
 .noop[
 
+### py_foo/foo/about.py
 ```python
-def find_infos(*path_parts):
-    finder = VersionFinder()
-    node = ast.parse(read(*path_parts))
-*   docstring = ast.get_docstring(node)
-    finder.visit(node)
-    return finder.version, docstring
-
-*version, descrption = find_infos('foo', '__init__.py'),
-
+"""
+Foo, a deer, a female deer...
+Bar a note to follow Foo...
+Baz, a name, I call myself...
+"""
+```
+### py_foo/setup.py
+```python
+about = {}
+with open("foo/about.py") as f:
+    exec(f.read(), about)
 #...
 setup(
-    version=version,
-    description=description,
+    description=about["__doc__"].strip(),
 #...
 )
 ```
@@ -672,14 +671,14 @@ setup(
 ]
 ---
 class: center
-# Description: parsing
+# Description: extracting
 
 Récupérer la longue description depuis le contenu du fichier py_foo/README.md
 
 .left[
 ```python
 #...
-    long_description=read('README.md'),
+    long_description=open('README.md').read(),
 #...
 ```
 ]
@@ -695,25 +694,25 @@ class: center
 ```python
 #...
 package_name = 'foo'
-version, descrption = find_infos(package_name, '__init__.py'),
+about = {}
+with open("foo/about.py") as f:
+    exec(f.read(), about)
 
 setup(
     name=package_name,
-    version=version,
+    version=about["__version__"],
 
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     include_package_data=True,
 
-    description=description,
-    long_description=read('README.md'),
+    description=about["__doc__"],
+    long_description=open('README.md').read(),
 
-    url='https://github.com/myself/foo/',
-    author='My Self',
-    author_email='foo@bar.com'
+    url=about["__url__"],
+    author=about["__author__"],
+    author_email=about["__author_email__"]
 )
 ```
-
-.footnote[.important[url], .important[author] et .important[author_email] peuvent aussi être gérés de la même façon.]
 
 ]
 
@@ -726,9 +725,10 @@ class: center
 .left.no-hl[
 Exemple de requirements.txt:
 ```
-django==1.8.1
-psycopg2==2.6
-django-extended-choices==1.0.4
+django==1.11.1
+psycopg2==2.7.1
+django-extended-choices==1.1.1
+pytest==3.1.2
 ```
 ]
 ---
@@ -762,9 +762,9 @@ class: center
 setup(
 #...
   install_requires=[
-    'django==1.8.1',
-    'psycopg2==2.6',
-    'django-extended-choices==1.0.4',
+    'django==1.11.1',
+    'psycopg2==2.7.1',
+    'django-extended-choices==1.1.1',
   ],
 #...
 )
@@ -778,58 +778,32 @@ setup(
 class: center
 # Dépendances
 <br/>
+--
 
 .left[
+.no-hl[
+Et si c'était plutôt requirements.txt qui s'adaptait ?
+
+### requirements.txt
+```
+-e .
+pytest==3.1.2
+
+```
+]
+### setup.py
 ```python
-from pip.req import parse_requirements
-
-def get_requirements(source):
-    install_reqs = parse_requirements(source)
-    return set([str(ir.req) for ir in install_reqs])
-
-
 setup(
 #...
-    install_requires=get_requirements('requirements.txt'),
+  install_requires=[
+    'django==1.11.1',
+    'psycopg2==2.7.1',
+    'django-extended-choices==1.1.1',
+  ],
 #...
 )
 ```
 ]
----
-class: center
-# Gestion des sessions Pip (1.5+)
-<br/>
-
-.left[
-```python
-from pip.req import parse_requirements
-
-# Code
-# The `session` argument for the `parse_requirements` function is available (but
-# optional) in pip 1.5, and mandatory in next versions
-try:
-    from pip.download import PipSession
-except ImportError:
-    parse_args = {}
-else:
-    parse_args = {'session': PipSession()}
-
-
-def get_requirements(source):
-    install_reqs = parse_requirements(source, **parse_args)
-    return set([str(ir.req) for ir in install_reqs])
-
-setup(
-#...
-    install_requires=get_requirements('requirements.txt'),
-#...
-)
-```
-]
-
-
-
-
 ---
 class: center
 # Assets
@@ -928,24 +902,21 @@ setup(
 ]
 ---
 class: center
-# Fichier setup final, partie 1/4
-<br />
-
-.left.smaller[
-
+# Fichier setup final, partie 1/3
+<br/>
+.left[
 ```python
-import ast
-import codecs
-import os
 from distutils.command.sdist import sdist
-from pip.req import parse_requirements
 from setuptools import find_packages, setup
 from subprocess import check_call
 
-# Configuration
-
 package_name = 'foo'
-long_doc_file = 'README.md'
+
+requirements = [
+    'django==1.11.1',
+    'psycopg2==2.7.1',
+    'django-extended-choices==1.1.1',
+]
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -958,99 +929,56 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-
-# /Configuration (don't touch below)
 ```
 ]
 ---
 class: center
-# Fichier setup final, partie 2/4
-<br />
-
-.left.smaller[
-
+# Fichier setup final, partie 2/3
+<br/>
+.left[
 ```python
-# Code
-# The `session` argument for the `parse_requirements` function is available (but
-# optional) in pip 1.5, and mandatory in next versions
-try:
-    from pip.download import PipSession
-except ImportError:
-    parse_args = {}
-else:
-    parse_args = {'session': PipSession()}
+class foo_sdist(sdist):
+    def run(self):
+        if not self.dry_run:
+            check_call(['invoke', 'prepare-build'])  # exemple
+
+        # distutils uses old-style classes, so no super()
+        sdist.run(self)
 
 
-def get_requirements(source):
-    install_reqs = parse_requirements(source, **parse_args)
-    return set([str(ir.req) for ir in install_reqs])
-
-class VersionFinder(ast.NodeVisitor):
-    def __init__(self):
-        self.data = {}
-
-    def visit_Assign(self, node):
-        if node.targets[0].id in (
-                '__version__',
-                '__author__',
-                '__contact__',
-                '__homepage__',
-                '__license__',
-        ):
-            self.data[node.targets[0].id[2:-2]] = node.value.s
+about = {}
+with open("foo/about.py") as f:
+    exec(f.read(), about)
 ```
 ]
 ---
 class: center
-# Fichier setup final, partie 3/4
-<br />
-
-.left.smaller[
-
-```python
-
-def read(*path_parts):
-    filename = os.path.join(os.path.dirname(__file__), *path_parts)
-    with codecs.open(filename, encoding='utf-8') as fp:
-        return fp.read()
-
-
-def find_info(*path_parts):
-    finder = VersionFinder()
-    node = ast.parse(read(*path_parts))
-    finder.visit(node)
-    info = finder.data
-    info['docstring'] = ast.get_docstring(node)
-    return info
-
-package_info = find_infos(package_name, '__init__.py'),
-```
-]
----
-class: center
-# Fichier setup final, partie 4/4
+# Fichier setup final, partie 3/3
 <br/>
 .left[
 ```python
 setup(
     name=package_name,
-    version=package_info['version'],
+    version=about['__version__'],
 
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     include_package_data=True,
 
-    description=package_info['docstring'],
-    long_description=read(long_doc_file),
+    description=about['__doc__'],
+    long_description=open('README.md').read(),
 
-    url=package_info['homepage'],
-    author=package_info['author'],
-    author_email=package_info['contact'],
-
-    install_requires=get_requirements('requirements.txt'),
-
-    license=package_info['license'],
-
+    url=about['__url__'],
+    author=about['__author__'],
+    author_email=about['__author_email__'],
+    license=about['__license__'],
     classifiers=classifiers,
+
+    install_requires=requirements,
+
+    cmdclass={'sdist': foo_sdist},
+
+    zip_safe=True,
+
 )
 ```
 ]
@@ -1060,15 +988,38 @@ class: center
 <br/>
 .left[
 ```python
+from .about import *
+from .real_stuff import Foo
+
+__all__ = ["Foo"]
+```
+]
+---
+class: center
+# Notre fichier about.py
+<br/>
+.left[
+```python
 """Foo, Bar Baz!"""
 
 __author__ = 'My Self'
-__contact__ = 'foo@bar.com'
-__homepage__ = 'https://github.com/myself/foo/'
+__author_email__ = 'foo@bar.com'
+__url__ = 'https://github.com/myself/foo/'
 __license__ = 'BSD'
 
 __version__ = '0.0.1'
 VERSION = tuple(__version__.split('.'))
+```
+]
+---
+class: center
+# Register
+<br/>
+.left.bigger[
+La toute première fois, il faut "déposer" le nom du paquet
+<br/>
+```bash
+$ python setup.py register
 ```
 ]
 ---
@@ -1078,17 +1029,33 @@ class: center
 .left.bigger[
 - sur PyPI si paquet public
 - ou sur un dépôt privé (devpi, gemfury...)
+
+N'oubliez pas d'en faire un wheel !
 <br/>
 ```bash
-$ python setup.py sdist upload
-```
-<br/>
-Si vous voulez (pouvez) en faire un "wheel":
-```basj
 $ python setup.py sdist bdist_wheel upload
 ```
 ]
 .footnote[C'est une bonne idée de tester le paquet avant l'upload, en fait]
+---
+class: center
+# .pypirc
+<br/>
+.left.bigger[
+Marre de taper vos identifiants à chaque fois ?
+]
+.left[
+<br/>
+### ~/.pypirc
+```ini
+[distutils]
+index-servers =
+    pypi
+[pypi]
+username: <username>
+password: <password>  # optionnel
+```
+]
 ---
 class: center
 # Install
@@ -1111,12 +1078,44 @@ Installera:
 - les dépendances
 - les assets pré-"compilés"
 ]
-
 ---
+class: center
+# Tout ce dont je voudrais encore<br/>vous parler sur le packaging
+<br/>
+.left.bigger[
+- .important[entry_points] - Votre setup.py peut créer des commandes shell
+- .important[extras_require] - Plusieurs saveurs pour un même paquet
+- .important[entry_points] - Ca permet aussi de gérer des plugins externes !
+
+]
+---
+class: center
+# Tout ce dont je voudrais encore<br/>vous parler sur les outils sympas
+<br/>
+.left.bigger[
+- .important[pytest] - Les tests en version propre et simple
+- .important[tox] - Lancement des tests dans toutes les configurations
+- .important[prospector] - Pour un code au top
+]
+---
+class: center
+# Tout ce dont je voudrais<br/>encore vous parler sur la météo
+<br/>
+.left.bigger[
+- .important[Travis / CircleCI] - Lancement des tests nuageux
+- .important[ReadTheDocs] - Documentation nuageuse
+- .important[Codecov] - Calcul de couverture nuageuse
+- .important[shields.io] - Pour avoir des badges stylés dans GitHub
+- .important[CONTRIBUTING.md, CODE_OF_CONDUCT.md, ...]
+]
+---
+
 class: inverse, center, middle
 
 # MERCI !
-.footnote[Retrouvez cette présentation sur http://twidi.github.io/]
+.footnote.right[Retrouvez l'original sur http://twidi.github.io/
+<br/>
+et ma version sur http://ewjoach.im]
 ---
 class: center, middle
 layout: true
