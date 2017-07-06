@@ -1,7 +1,7 @@
 about = {}
-with open("foo/about.py") as f:
+with open("foo/_version.py") as f:
     exec(f.read(), about)
 # ...
 setup(
-    version=about["__version__"],
+    version=about["__version__"]
 )

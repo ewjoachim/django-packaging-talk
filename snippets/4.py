@@ -1,5 +1,1 @@
-#...
-__version__ = '0.0.1a1'
- VERSION = tuple(__version__.split('.'))
-# VERSION est maintenant ('0', '0', '1a1')
-#...
+__version__ = "0.0.1"
